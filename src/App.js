@@ -34,7 +34,7 @@ function App() {
   return (
     <div className="App">
       <BrowserTTSButton text={'Esto es un botón de prueba con la generación de texto del navegador'} />
-      <AzureTTSButton text={'Esto es un botón de prueba con la generación de texto de Allúr'} />
+      <AzureTTSButton text={'Esto es un botón de prueba con la generación de texto de Allúr'} lang = {"es-AR-ElenaNeural"} />
       
     </div>
   );

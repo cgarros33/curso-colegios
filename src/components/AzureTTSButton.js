@@ -1,54 +1,44 @@
-//import React from 'react';
 
-//import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
 import React, { useState, useEffect } from 'react';
-//import { Container } from 'reactstrap';
-//import { getTokenOrRefresh } from './token_util';
-
-//import { ResultReason } from 'microsoft-cognitiveservices-speech-sdk';
-
 const speechsdk = require('microsoft-cognitiveservices-speech-sdk')
 
-//const axios = require('axios');
 
-
-
-
-//import { syntesizeSpeech } from './azurettsscript'
-
-const AzureTTSButton = ({ text }) => {
+const AzureTTSButton = ({ text, lang }) => {
 
     const [player, updatePlayer] = useState({ p: undefined, muted: false });
- 
 
-    
+    const [isSpeaking, setIsSpeaking] = useState(false);
+
     async function textToSpeech(textToSpeak) {
+
         let speechRegion = 'brazilsouth';
         const speechConfig = speechsdk.SpeechConfig.fromSubscription('89a82822a86740c9ad37ba0b63449bbf', 'brazilsouth');
         const myPlayer = new speechsdk.SpeakerAudioDestination();
         updatePlayer(p => { p.p = myPlayer; return p; });
         const audioConfig = speechsdk.AudioConfig.fromSpeakerOutput(player.p);
-        speechConfig.speechSynthesisVoiceName = "es-AR-TomasNeural";
+        speechConfig.speechSynthesisVoiceName = lang;
         let synthesizer = new speechsdk.SpeechSynthesizer(speechConfig, audioConfig);
-        synthesizer.speakTextAsync(
-            textToSpeak,
-            result => {
-                let text;
-                if (result.reason === speechsdk.ResultReason.SynthesizingAudioCompleted) {
-                    text = `synthesis finished for "${textToSpeak}".\n`
-                } else if (result.reason === speechsdk.ResultReason.Canceled) {
-                    text = `synthesis failed. Error detail: ${result.errorDetails}.\n`
-                }
-                synthesizer.close();
-                synthesizer = undefined;
-                //setDisplayText(text);
-            },
-            function (err) {
-                //setDisplayText(`Error: ${err}.\n`);
-
-                synthesizer.close();
-                synthesizer = undefined;
-            });
+        setIsSpeaking(true);
+        if (!isSpeaking) {
+            synthesizer.speakTextAsync(
+                textToSpeak,
+                result => {
+                    let text;
+                    if (result.reason === speechsdk.ResultReason.SynthesizingAudioCompleted) {
+                        text = `synthesis finished for "${textToSpeak}".\n`
+                    } else if (result.reason === speechsdk.ResultReason.Canceled) {
+                        text = `synthesis failed. Error detail: ${result.errorDetails}.\n`
+                    }
+                    setIsSpeaking(false);
+                    synthesizer.close();
+                    synthesizer = undefined;
+                },
+                function (err) {
+                    synthesizer.close();
+                    setIsSpeaking(false);
+                    synthesizer = undefined;
+                });
+        }
     }
 
 
@@ -57,7 +47,6 @@ const AzureTTSButton = ({ text }) => {
 
         <div>
             <button onClick={() => textToSpeech(text)}>
-                
                 Azure
             </button>
         </div>
