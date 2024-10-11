@@ -1,11 +1,10 @@
 import logo from './logo.svg';
 import './App.css';
 
-import { useTts } from 'tts-react'
 import BrowserTTSButton from './components/BrowserTTSButton';
 import AzureTTSButton from './components/AzureTTSButton';
-
-
+import ImageBox from './components/ImageBox';
+import {useState} from 'react';
 /* const CustomTTSComponent = ({ lang, children, highlight = false }) => {
   const { ttsChildren, state, play, stop, pause } = useTts({
     lang,
@@ -30,12 +29,37 @@ import AzureTTSButton from './components/AzureTTSButton';
   )
 } 
 */
+
+const languages = ["es-AR-ElenaNeural", "es-AR-TomasNeural", "es-ES-ElviraNeural", "es-ES-LauraNeural", "es-MX-DaliaNeural", "es-MX-JorgeNeural", "es-US-AzulNeural", "es-US-BenjaminNeural", "es-US-JennyNeural", "es-US-LiaNeural", "es-US-PabloNeural", "es-US-SofiaNeural", "es-US-XimenaNeural", "es-US-ZayraNeural"];
+const browserBuiltInLanguages = navigator.languages;
 function App() {
+  const [textToSpeak, setTextToSpeak] = useState('No escribiste nada');
+  const [language, setLanguage] = useState(languages[0]);
+  const [browserLanguage, setBrowserLanguage] = useState(browserBuiltInLanguages[0]);
+
   return (
     <div className="App">
-      <BrowserTTSButton text={'Esto es un botón de prueba con la generación de texto del navegador'} />
-      <AzureTTSButton text={'Esto es un botón de prueba con la generación de texto de Allúr'} lang = {"es-AR-ElenaNeural"} />
       
+      <select onChange={(e) => setLanguage(e.target.value)} value={language}>
+            {languages.map((lang) => (
+              <option key={lang} value={lang}>
+                {lang}
+              </option>
+            ))}
+          </select>
+
+          <select onChange={(e) => setBrowserLanguage(e.target.value)} value={browserLanguage}>
+            {browserBuiltInLanguages.map((lang) => (
+              <option key={lang} value={lang}>
+                {lang}
+              </option>
+            ))}
+          </select>
+          
+      <input type="text" onChange={(e) => setTextToSpeak(e.target.value)} />
+      <BrowserTTSButton text={textToSpeak} lang={browserLanguage} />
+      <AzureTTSButton text={textToSpeak} lang = {language} />
+      <ImageBox/>
     </div>
   );
 }

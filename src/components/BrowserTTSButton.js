@@ -1,9 +1,9 @@
 import React from 'react';
 
-const BrowserTTSButton = ({text}) => {
+const BrowserTTSButton = ({text, lang}) => {
     const handleClick = () => {
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'es-419'; 
+        utterance.lang = lang; 
         window.speechSynthesis.speak(utterance);
         console.log("JOADFSHIUGHDIUSHFOIUGSFO");
     };
